@@ -6,7 +6,7 @@ import seaborn as sns
 # Example values for coefs of two tasks
 task_1 = "Admission to IC (AIC)"
 
-coef_values_task_1 = [0.07133198,-0.34881496,0.86413825,0.23724532,0.8718639,0.17851993,-0.13804518,0.46167228,0.12014102,-0.20952578,-0.36016205,0.34375322,-0.8213519,0.058536213,-0.18470998,-0.07103694,0.011008064,0.5020578,0.91656625,0.35357895,0.2244653,-0.37835062,0.35781276,0.16792683]
+coef_values_task_1 = [-0.14955892,0.21403687,0.8218423,-0.057706952,0.7096638,0.19789775,0.12517363,0.5200941,-0.36590415,-0.18075521,-0.3419112,0.32616827,-0.6797731,-0.04948909,-0.13667172,-0.08350992,-0.03466881,0.66938174,0.6219082,-0.14461945,-0.47652748,0.33832604,0.23330507]
 
 static_features = ['InfectionSuspected', 'DiagnosticBlood', 'DisfuncOrg',
                        'SIRSCritTachypnea', 'Hypotensie',
@@ -14,7 +14,7 @@ static_features = ['InfectionSuspected', 'DiagnosticBlood', 'DisfuncOrg',
                        'DiagnosticIC', 'DiagnosticSputum', 'DiagnosticLiquor',
                        'DiagnosticOther', 'SIRSCriteria2OrMore', 'DiagnosticXthorax',
                        'SIRSCritTemperature', 'DiagnosticUrinaryCulture', 'SIRSCritLeucos',
-                       'Oligurie', 'DiagnosticLacticAcid', 'Diagnose', 'Hypoxie',
+                       'Oligurie', 'DiagnosticLacticAcid', 'Hypoxie', # 'Diagnose'
                        'DiagnosticUrinarySediment', 'DiagnosticECG']
 
 coefs_task_1 = dict(zip([x for x in static_features], np.array(coef_values_task_1)))
@@ -69,7 +69,7 @@ def plot_box_plots(coefs_1):
     ax2.set_yticklabels([])
 
     plt.tight_layout()
-    plt.savefig(f'../../plots/coef_barplot.pdf', bbox_inches="tight")
+    plt.savefig(f'../plots/coef_barplot.pdf', bbox_inches="tight")
 
 
 plot_box_plots(coefs_task_1)

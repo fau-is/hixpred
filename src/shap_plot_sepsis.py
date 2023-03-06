@@ -12,7 +12,7 @@ mode = "complete"
 target_activity = "Admission IC"
 
 
-with open(f'../../output/{data_set}_{mode}_{target_activity}_shap.npy', 'rb') as f: X_all = pickle.load(f)
+with open(f'../output/{data_set}_{mode}_{target_activity}_shap.npy', 'rb') as f: X_all = pickle.load(f)
 
 
 matplotlib.style.use('default')
@@ -112,4 +112,4 @@ ax.set_xticklabels([])
 ax.set_yticklabels([])
 
 fig11.tight_layout()
-plt.savefig(f'../../plots/{target_activity}_shap.pdf', bbox_inches="tight")
+plt.savefig(f'../plots/{target_activity}_shap.pdf', bbox_inches="tight")
