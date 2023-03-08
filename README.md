@@ -17,7 +17,8 @@ If you use the code or fragments of it, please cite our paper:
 
 ## Data Set Characteristics
 
-To conduct our experiments, we used a publicly available dataset.\footnote{\url{https://data.4tu.nl/articles/dataset/Sepsis_Cases_-_Event_Log/12707639}} focuses on sepsis cases
+To conduct our experiments, we used a publicly available dataset: https://data.4tu.nl/articles/dataset/Sepsis_Cases_-_Event_Log/12707639
+As a predition target, we considered the Admission to IC which constitutes a possible outcome of a patient’s pathway, indicating whether a patient is required to transfer to the IC unit. Overall the dataset contains 995 instances with 98 positive labels.
 
 Table 1: Times for training and testing (in seconds).
 |               | Helpdesk |        |        |        |  Bpi2019 |         |         |         |
