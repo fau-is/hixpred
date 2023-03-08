@@ -17,8 +17,7 @@ If you use the code or fragments of it, please cite our paper:
 
 ## Data Set Characteristics
 
-We conducted all experiments on a workstation with 12 CPUs, 128 GB RAM.
-In Table 1, we present the times for training and testing of the baseline and our prescriptive business process monitoring technique.
+To conduct our experiments, we used a publicly available dataset.\footnote{\url{https://data.4tu.nl/articles/dataset/Sepsis_Cases_-_Event_Log/12707639}} focuses on sepsis cases
 
 Table 1: Times for training and testing (in seconds).
 |               | Helpdesk |        |        |        |  Bpi2019 |         |         |         |
