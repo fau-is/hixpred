@@ -24,7 +24,7 @@ seed = False
 num_repetitions = 1
 mode = "complete"
 val_size = 0.2
-train_size = 0.8
+train_size = 0.7
 
 hpo = True
 
