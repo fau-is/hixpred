@@ -24,7 +24,7 @@ The data set contains static and sequential features. The static features are al
 Characteristics of the four sequential features can be found in the table below.
 
 Table 1: Characteristics of sequential features.
-                                                              | Percentile                                  |
+|                                                              | Percentile                                  |
 |               | Observations  | Mean   | Standard Deviation | 25%      |  50%     |  75%      | 95%       | 
 |---------------|:------------: |:------:|:------------------:|:--------:|:--------:|:---------:|:---------:|
 | Age           | 724           | 72.12  |15.48               |65.0      | 75.0     | 85.0      |  90.0     | 
