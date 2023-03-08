@@ -6,12 +6,12 @@ This project contains the source code for a novel hybrid interpretable and expla
 If you use the code or fragments of it, please cite our paper:
 
 ```
-@inprocessings{weinzierl2020nba,
-    title={Precriptive Business Process Monitoring for Recommending Next Best Actions},
-    author={Weinzierl, Sven and Dunzer, Sebastian and Zilker, Sandra and Matzner, Martin},
-    booktitle={Proceedings of the 18th International Conference on Business Process Management Forum},
-    year={2020},
-    publisher={Springer}
+@inprocessings{zilker2023hixpred,
+    title={Best of Both Worlds: Combining Predictive Power with Interpretable and Explainable Results for Patient Pathway Prediction},
+    author={Zilker, Sandra and Weinzierl, Sven and Zschech, Patrick and Kraus, Mathias and Matzner, Martin},
+    booktitle={Proceedings of the 31st European Conference on Information Systems},
+    year={2023},
+    publisher={AIS}
 }
 ```
 
