@@ -12,7 +12,7 @@ def get_sepsis_data(target_activity, max_len, min_len):
                        'DiagnosticIC', 'DiagnosticSputum', 'DiagnosticLiquor',
                        'DiagnosticOther', 'SIRSCriteria2OrMore', 'DiagnosticXthorax',
                        'SIRSCritTemperature', 'DiagnosticUrinaryCulture', 'SIRSCritLeucos',
-                       'Oligurie', 'DiagnosticLacticAcid', 'Diagnose', 'Hypoxie',
+                       'Oligurie', 'DiagnosticLacticAcid', 'Hypoxie',
                        'DiagnosticUrinarySediment', 'DiagnosticECG']
 
     seq_features = ['Leucocytes', 'CRP', 'LacticAcid', 'ER Registration', 'ER Triage', 'ER Sepsis Triage',
@@ -33,9 +33,6 @@ def get_sepsis_data(target_activity, max_len, min_len):
     df = df.sort_values(['Case ID', 'Complete Timestamp'])
     df = df.reset_index()
 
-    diagnose_mapping = dict(zip(df['Diagnose'].unique(), np.arange(len(df['Diagnose'].unique()))))  # ordinal encoding
-    df['Diagnose'] = df['Diagnose'].apply(lambda x: diagnose_mapping[x])
-    df['Diagnose'] = df['Diagnose'].apply(lambda x: x / max(df['Diagnose']))  # normalise ordinal encoding
     df['Age'] = df['Age'].fillna(-1)
     df['Age'] = df['Age'].apply(lambda x: x / max(df['Age']))
 

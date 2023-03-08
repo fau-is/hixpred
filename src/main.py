@@ -290,48 +290,6 @@ def train_nb(x_train_seq, x_train_stat, y_train, x_val_seq, x_val_stat, y_val, h
         return model
 
 
-def train_dt(x_train_seq, x_train_stat, y_train, x_val_seq, x_val_stat, y_val, hpos, hpo):
-    x_concat_train = concatenate_tensor_matrix(x_train_seq, x_train_stat)
-    x_concat_val = concatenate_tensor_matrix(x_val_seq, x_val_stat)
-
-    if hpo:
-        best_model = ""
-        best_hpos = ""
-        aucs = []
-
-        for max_depth in hpos["dt"]["max_depth"]:
-            for min_samples_split in hpos["dt"]["min_samples_split"]:
-
-                model = DecisionTreeClassifier(max_depth=max_depth)
-                model.fit(x_concat_train, np.ravel(y_train))
-                preds_proba = model.predict_proba(x_concat_val)
-                preds_proba = [pred_proba[1] for pred_proba in preds_proba]
-                auc = metrics.roc_auc_score(y_true=y_val, y_score=preds_proba)
-                aucs.append(auc)
-
-                if auc >= max(aucs):
-                    best_model = model
-                    best_hpos = {"max_depth": max_depth, "min_samples_split": min_samples_split}
-
-        f = open(f'../output/{data_set}_{mode}_{target_activity}_hpos.txt', 'a+')
-        f.write(str(best_hpos) + '\n')
-        f.write("Validation aucs," + ",".join([str(x) for x in aucs]) + '\n')
-        f.write(f'Avg,{sum(aucs) / len(aucs)}\n')
-        f.write(f'Std,{np.std(aucs, ddof=1)}\n')
-        f.close()
-
-        return best_model, best_hpos
-
-    else:
-        x_concat = np.concatenate((x_concat_train, x_concat_val), axis=0)
-        y = np.concatenate((y_train, y_val), axis=0)
-
-        model = DecisionTreeClassifier()
-        model.fit(x_concat, np.ravel(y))
-
-        return model
-
-
 def train_knn(x_train_seq, x_train_stat, y_train, x_val_seq, x_val_stat, y_val, hpos, hpo):
     x_concat_train = concatenate_tensor_matrix(x_train_seq, x_train_stat)
     x_concat_val = concatenate_tensor_matrix(x_val_seq, x_val_stat)
@@ -946,12 +904,6 @@ def evaluate_on_cut(x_seqs, x_statics, y, mode, target_activity, data_set, hpos,
             results['preds'] = [np.argmax(pred_proba) for pred_proba in preds_proba]
             results['preds_proba'] = [pred_proba[1] for pred_proba in preds_proba]
 
-        elif mode == "dt":
-            model, best_hpos = train_dt(X_train_seq, X_train_stat, y_train.reshape(-1, 1), X_val_seq, X_val_stat,
-                                        y_val.reshape(-1, 1), hpos, hpo)
-            preds_proba = model.predict_proba(concatenate_tensor_matrix(X_test_seq, X_test_stat))
-            results['preds'] = [np.argmax(pred_proba) for pred_proba in preds_proba]
-            results['preds_proba'] = [pred_proba[1] for pred_proba in preds_proba]
 
         elif mode == "knn":
             model, best_hpos = train_knn(X_train_seq, X_train_stat, y_train.reshape(-1, 1), X_val_seq, X_val_stat,
@@ -1099,25 +1051,20 @@ os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
 
 hpos = {
     "complete": {"size": [8, 16], "learning_rate": [0.0005, 0.001], "batch_size": [128]},
-    # "complete": {"size": [8, 16], "learning_rate": [0.0005, 0.001], "batch_size": [128]},
-    # "complete": {"size": [4, 8, 32, 64], "learning_rate": [0.001, 0.01, 0.05], "batch_size": [32, 128]},
-    # "sequential": {"size": [4, 8, 32, 64], "learning_rate": [0.001, 0.01, 0.05], "batch_size": [32, 128]},
     "sequential": {"size": [8, 16], "learning_rate": [0.0005, 0.001], "batch_size": [128]},
     "static": {"learning_rate": [0.0005, 0.001], "batch_size": [128]},
-    # "static": {"learning_rate": [0.001, 0.01, 0.05], "batch_size": [32, 128]},
     "lr": {"reg_strength": [pow(10, -3), pow(10, -2), pow(10, -1), pow(10, 0), pow(10, 1), pow(10, 2), pow(10, 3)], "solver": ["lbfgs"]},
     "rf": {"num_trees": [100, 200, 500], "max_depth_trees": [2, 5, 10], "num_rand_vars": [1, 3, 5, 10]},
     # "svm": {"kern_fkt": ["linear", "rbf"], "cost": [pow(10, -3), pow(10, -2), pow(10, -1), pow(10, 0), pow(10, 1), pow(10, 2), pow(10, 3)]},
     "gb": {"n_estimators": [100, 200, 500], "learning_rate": [0.01, 0.05, 0.1]},
     "ada": {"n_estimators": [50, 100, 200], "learning_rate": [0.1, 0.5, 1.0]},
     "nb": {"var_smoothing": [pow(1, -9)]},
-    # "dt": {"max_depth": [5, 10, 15], "min_samples_split": [1, 3, 5, 10]},
     "knn": {"n_neighbors": [3, 5, 10, 15]}
 }
 
 if data_set == "sepsis":
 
-    for mode in ['complete']:  # 'complete', 'static', 'sequential', 'lr', 'rf', 'gb', 'ada', 'dt', 'knn', 'nb'
+    for mode in ['complete']:  # 'complete', 'static', 'sequential', 'lr', 'rf', 'gb', 'ada', 'knn', 'nb'
         for target_activity in ['Admission IC']:
 
             x_seqs, x_statics, y, x_time_vals_final, seq_features, static_features = data.get_sepsis_data(
@@ -1129,14 +1076,14 @@ if data_set == "sepsis":
                 data_set, hpos, hpo, x_time=x_time_vals_final, x_statics_vals_corr=None)
 
             if mode == "complete":
-                # Train model and plot linear coef --> Figure 2
+                # Train model and plot linear coef
                 model = run_coefficient(x_seqs_train, x_statics_train, y_train, x_seqs_val, x_statics_val, y_val,
                                         target_activity, static_features, best_hpos_repetitions)
 
                 x_seqs_train = x_seqs_train[0:1000]
                 x_statics_train = x_statics_train[0:1000]
 
-                # Get Explanations for LSTM inputs --> Figure 3
+                # Get Explanations for LSTM inputs
                 explainer = shap.DeepExplainer(model, [x_seqs_train, x_statics_train])
                 shap_values = explainer.shap_values([x_seqs_train, x_statics_train])
 

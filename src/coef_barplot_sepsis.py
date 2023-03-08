@@ -14,7 +14,7 @@ static_features = ['InfectionSuspected', 'DiagnosticBlood', 'DisfuncOrg',
                        'DiagnosticIC', 'DiagnosticSputum', 'DiagnosticLiquor',
                        'DiagnosticOther', 'SIRSCriteria2OrMore', 'DiagnosticXthorax',
                        'SIRSCritTemperature', 'DiagnosticUrinaryCulture', 'SIRSCritLeucos',
-                       'Oligurie', 'DiagnosticLacticAcid', 'Hypoxie', # 'Diagnose'
+                       'Oligurie', 'DiagnosticLacticAcid', 'Hypoxie',
                        'DiagnosticUrinarySediment', 'DiagnosticECG']
 
 coefs_task_1 = dict(zip([x for x in static_features], np.array(coef_values_task_1)))
