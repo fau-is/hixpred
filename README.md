@@ -24,9 +24,9 @@ The data set contains static and sequential features. The static features are al
 Characteristics of the four sequential features can be found in the table below.
 
 Table 1: Characteristics of sequential features.
-|               | Observations  | Mean   | Standard Deviation |        |  Bpi2019 |         |         |         |
-|---------------|:------------: |:------:|------------------  |--------|:--------:|---------|---------|---------|
-| Age           | 724           | 72.12  |15.48 k=10               | k=15   | Baseline | k=5     | k=10    | k=15    |
-| CRP           | 2,388         | 111.66 | 125.06 | 100.07 | 355.66   | 757.17  | 743.00  | 750.10  |
-| Leucocytes    | 2,525         | 13.24  | 904.26 | 976.88 | 3609.98  | 6829.20 | 4652.48 | 5861.92 |
-| Lactic Acis   | 992           | 1.98   |
+|               | Observations  | Mean   | Standard Deviation | 25%      |  50%     |  75%      | 95%       | 
+|---------------|:------------: |:------:|:------------------:|:--------:|:--------:|:---------:|:---------:|
+| Age           | 724           | 72.12  |15.48               |65.0      | 75.0     | 85.0      |  90.0     | 
+| CRP           | 2,388         | 111.66 |83.53               | 44.0     | 94.0     | 156.0     | 276.0     |
+| Leucocytes    | 2,525         | 13.24  |16.87               | 7.6      | 11.0     | 15.1      | 24.9      |
+| Lactic Acis   | 992           | 1.98   |1.49                |1.1       | 1.6      |2.3        |4.7        |
