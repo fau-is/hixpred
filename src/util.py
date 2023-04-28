@@ -1,6 +1,13 @@
 import numpy as np
 
 def get_one_hot_of_activity_sepsis(x, max_leucocytes, max_lacticacid):
+    """
+    Creates a "one-hot" vector based on the ['Activity']-value of x.
+    :param x: Dictionary
+    :param max_leucocytes: Numerical value representing the maximal value of leucocytes
+    :param max_lacticacid: Numerical value representing the maximal value of lacticacid
+    :return:
+    """
     if x['Activity'] == 'Leucocytes':
         ret = [0, min(x['Leucocytes'], max_leucocytes) / max_leucocytes]
         if np.isnan(ret[1]):

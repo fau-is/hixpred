@@ -20,6 +20,15 @@ matplotlib.rcParams.update({'font.size': 16})
 
 
 def my_palplot(pal, size=1, ax=None):
+    """
+    Creates a plot for the data stored in "data_set" using the input color palette.
+    Works for data_set = ("sepsis" | "mimic").
+    Plot is saved in plots folder
+    :param pal: Color Palette
+    :param size: x and y size of the plot. Irrelevant if ax not None
+    :param ax: Mathplotlib subplot
+    :return:
+    """
     n = 5
     if ax is None:
         f, ax = plt.subplots(1, 1, figsize=(n * size, size))

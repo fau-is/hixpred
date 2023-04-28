@@ -49,7 +49,7 @@ def my_palplot(pal, size=1, ax=None):
 
 def plot_box_plots(coefs_1):
     '''
-    Creates a box plot from the input dictionary using different colors.
+    Creates a box plot from the input dictionary using different colors. box plot is saved in plots folder
     :param coefs_1:A dictionary. It's values() function has to return a NumPy Array
     '''
     matplotlib.rcParams.update({'font.size': 20, 'figure.figsize': (8,8)})
