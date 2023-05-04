@@ -30,6 +30,12 @@ hpo = True
 
 
 def concatenate_tensor_matrix(x_seq, x_stat):
+    """
+    Concatenates two multidimensional numpy Arrays and returns them as a single Array, shaped like a matrix
+    :param x_seq: multidimensional Numpy Array
+    :param x_stat: multidimensional Numpy Array
+    :return: Concatenated numpy Array
+    """
     x_train_seq_ = x_seq.reshape(-1, x_seq.shape[1] * x_seq.shape[2])
     x_concat = np.concatenate((x_train_seq_, x_stat), axis=1)
 
@@ -37,6 +43,19 @@ def concatenate_tensor_matrix(x_seq, x_stat):
 
 
 def train_rf(x_train_seq, x_train_stat, y_train, x_val_seq, x_val_stat, y_val, hpos, hpo):
+    """
+    Trains a ML model with the Input data using the Random Forest Classifier and returns the model as well as the Hyperparameter Optimizations, if needed.
+    Best hpos will be saved in an external file.
+    :param x_train_seq: Trainingsdataset (sequential Features); multidimensional Numpy Array
+    :param x_train_stat: Trainingsdataset (static Features); multidimensional Numpy Array
+    :param y_train: Trainingsdataset (Prediction); multidimensional Numpy Array
+    :param x_val_seq: Validation dataset (sequential Features); multidimensional Numpy Array
+    :param x_val_stat: Validation dataset (static Features); multidimensional Numpy Array
+    :param y_val: Validation dataset (Prediction); multidimensional Numpy Array
+    :param hpos: Hyperparameter Optimizations; Dictionary
+    :param hpo: Bool; True: model and hpos will be determined and returned | False: only model will be returned
+    :return: Machine Learning Model and Hyperparameter Optimizations or just the Machine Learning Model
+    """
     x_concat_train = concatenate_tensor_matrix(x_train_seq, x_train_stat)
     x_concat_val = concatenate_tensor_matrix(x_val_seq, x_val_stat)
 
@@ -82,6 +101,19 @@ def train_rf(x_train_seq, x_train_stat, y_train, x_val_seq, x_val_stat, y_val, h
 
 
 def train_lr(x_train_seq, x_train_stat, y_train, x_val_seq, x_val_stat, y_val, hpos, hpo):
+    """
+    Trains a ML model with the Input data using Logistic Regression and returns the model as well as the Hyperparameter Optimizations, if needed.
+    Best hpos will be saved in an external file.
+    :param x_train_seq: Trainingsdataset (sequential Features); multidimensional Numpy Array
+    :param x_train_stat: Trainingsdataset (static Features); multidimensional Numpy Array
+    :param y_train: Trainingsdataset (Prediction); multidimensional Numpy Array
+    :param x_val_seq: Validation dataset (sequential Features); multidimensional Numpy Array
+    :param x_val_stat: Validation dataset (static Features); multidimensional Numpy Array
+    :param y_val: Validation dataset (Prediction); multidimensional Numpy Array
+    :param hpos: Hyperparameter Optimizations; Dictionary
+    :param hpo: Bool; True: model and hpos will be determined and returned | False: only model will be returned
+    :return: Machine Learning Model and Hyperparameter Optimizations or just the Machine Learning Model
+    """
     x_concat_train = concatenate_tensor_matrix(x_train_seq, x_train_stat)
     x_concat_val = concatenate_tensor_matrix(x_val_seq, x_val_stat)
 
@@ -124,6 +156,19 @@ def train_lr(x_train_seq, x_train_stat, y_train, x_val_seq, x_val_stat, y_val, h
 
 
 def train_svm(x_train_seq, x_train_stat, y_train, x_val_seq, x_val_stat, y_val, hpos, hpo):
+    """
+    Trains a ML model with the Input data using Support Vector Classification and returns the model as well as the Hyperparameter Optimizations, if needed.
+    Best hpos will be saved in an external file.
+    :param x_train_seq: Trainingsdataset (sequential Features); multidimensional Numpy Array
+    :param x_train_stat: Trainingsdataset (static Features); multidimensional Numpy Array
+    :param y_train: Trainingsdataset (Prediction); multidimensional Numpy Array
+    :param x_val_seq: Validation dataset (sequential Features); multidimensional Numpy Array
+    :param x_val_stat: Validation dataset (static Features); multidimensional Numpy Array
+    :param y_val: Validation dataset (Prediction); multidimensional Numpy Array
+    :param hpos: Hyperparameter Optimizations; Dictionary
+    :param hpo: Bool; True: model and hpos will be determined and returned | False: only model will be returned
+    :return: Machine Learning Model and Hyperparameter Optimizations or just the Machine Learning Model
+    """
     x_concat_train = concatenate_tensor_matrix(x_train_seq, x_train_stat)
     x_concat_val = concatenate_tensor_matrix(x_val_seq, x_val_stat)
 
@@ -166,6 +211,19 @@ def train_svm(x_train_seq, x_train_stat, y_train, x_val_seq, x_val_stat, y_val, 
 
 
 def train_gb(x_train_seq, x_train_stat, y_train, x_val_seq, x_val_stat, y_val, hpos, hpo):
+    """
+    Trains a ML model with the Input data using Gradient Boosting Classifier and returns the model as well as the Hyperparameter Optimizations, if needed.
+    Best hpos will be saved in an external file.
+    :param x_train_seq: Trainingsdataset (sequential Features); multidimensional Numpy Array
+    :param x_train_stat: Trainingsdataset (static Features); multidimensional Numpy Array
+    :param y_train: Trainingsdataset (Prediction); multidimensional Numpy Array
+    :param x_val_seq: Validation dataset (sequential Features); multidimensional Numpy Array
+    :param x_val_stat: Validation dataset (static Features); multidimensional Numpy Array
+    :param y_val: Validation dataset (Prediction); multidimensional Numpy Array
+    :param hpos: Hyperparameter Optimizations; Dictionary
+    :param hpo: Bool; True: model and hpos will be determined and returned | False: only model will be returned
+    :return: Machine Learning Model and Hyperparameter Optimizations or just the Machine Learning Model
+    """
     x_concat_train = concatenate_tensor_matrix(x_train_seq, x_train_stat)
     x_concat_val = concatenate_tensor_matrix(x_val_seq, x_val_stat)
 
@@ -208,6 +266,19 @@ def train_gb(x_train_seq, x_train_stat, y_train, x_val_seq, x_val_stat, y_val, h
 
 
 def train_ada(x_train_seq, x_train_stat, y_train, x_val_seq, x_val_stat, y_val, hpos, hpo):
+    """
+    Trains a ML model with the Input data using Ada Boost Classification and returns the model as well as the Hyperparameter Optimizations, if needed.
+    Best hpos will be saved in an external file.
+    :param x_train_seq: Trainingsdataset (sequential Features); multidimensional Numpy Array
+    :param x_train_stat: Trainingsdataset (static Features); multidimensional Numpy Array
+    :param y_train: Trainingsdataset (Prediction); multidimensional Numpy Array
+    :param x_val_seq: Validation dataset (sequential Features); multidimensional Numpy Array
+    :param x_val_stat: Validation dataset (static Features); multidimensional Numpy Array
+    :param y_val: Validation dataset (Prediction); multidimensional Numpy Array
+    :param hpos: Hyperparameter Optimizations; Dictionary
+    :param hpo: Bool; True: model and hpos will be determined and returned | False: only model will be returned
+    :return: Machine Learning Model and Hyperparameter Optimizations or just the Machine Learning Model
+    """
     x_concat_train = concatenate_tensor_matrix(x_train_seq, x_train_stat)
     x_concat_val = concatenate_tensor_matrix(x_val_seq, x_val_stat)
 
@@ -250,6 +321,19 @@ def train_ada(x_train_seq, x_train_stat, y_train, x_val_seq, x_val_stat, y_val, 
 
 
 def train_nb(x_train_seq, x_train_stat, y_train, x_val_seq, x_val_stat, y_val, hpos, hpo):
+    """
+    Trains a ML model with the Input data using Gaussian Naive Bayes Classification and returns the model as well as the Hyperparameter Optimizations, if needed.
+    Best hpos will be saved in an external file.
+    :param x_train_seq: Trainingsdataset (sequential Features); multidimensional Numpy Array
+    :param x_train_stat: Trainingsdataset (static Features); multidimensional Numpy Array
+    :param y_train: Trainingsdataset (Prediction); multidimensional Numpy Array
+    :param x_val_seq: Validation dataset (sequential Features); multidimensional Numpy Array
+    :param x_val_stat: Validation dataset (static Features); multidimensional Numpy Array
+    :param y_val: Validation dataset (Prediction); multidimensional Numpy Array
+    :param hpos: Hyperparameter Optimizations; Dictionary
+    :param hpo: Bool; True: model and hpos will be determined and returned | False: only model will be returned
+    :return: Machine Learning Model and Hyperparameter Optimizations or just the Machine Learning Model
+    """
     x_concat_train = concatenate_tensor_matrix(x_train_seq, x_train_stat)
     x_concat_val = concatenate_tensor_matrix(x_val_seq, x_val_stat)
 
@@ -291,6 +375,19 @@ def train_nb(x_train_seq, x_train_stat, y_train, x_val_seq, x_val_stat, y_val, h
 
 
 def train_knn(x_train_seq, x_train_stat, y_train, x_val_seq, x_val_stat, y_val, hpos, hpo):
+    """
+    Trains a ML model with the Input data using Gaussian K-nearest Neighbors Classification and returns the model as well as the Hyperparameter Optimizations, if needed.
+    Best hpos will be saved in an external file.
+    :param x_train_seq: Trainingsdataset (sequential Features); multidimensional Numpy Array
+    :param x_train_stat: Trainingsdataset (static Features); multidimensional Numpy Array
+    :param y_train: Trainingsdataset (Prediction); multidimensional Numpy Array
+    :param x_val_seq: Validation dataset (sequential Features); multidimensional Numpy Array
+    :param x_val_stat: Validation dataset (static Features); multidimensional Numpy Array
+    :param y_val: Validation dataset (Prediction); multidimensional Numpy Array
+    :param hpos: Hyperparameter Optimizations; Dictionary
+    :param hpo: Bool; True: model and hpos will be determined and returned | False: only model will be returned
+    :return: Machine Learning Model and Hyperparameter Optimizations or just the Machine Learning Model
+    """
     x_concat_train = concatenate_tensor_matrix(x_train_seq, x_train_stat)
     x_concat_val = concatenate_tensor_matrix(x_val_seq, x_val_stat)
 
