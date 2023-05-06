@@ -809,6 +809,14 @@ def train_lstm(x_train_seq, x_train_stat, y_train, x_val_seq=False, x_val_stat=F
 
 
 def correct_static(seq, seqs_time, idx_sample, idx_time):
+    """
+    Corrects the static features of a sequence based on seqs_time.
+    :param seq: Sequence with static features that should be corrected; Array
+    :param seqs_time: 2 dimensional matrix, that stores features and their values
+    :param idx_sample: Index determining which sample from seqs_time will be used
+    :param idx_time: Index determining from which time the entries from seqs_time will be selected
+    :return: Corrected seq
+    """
 
     features = seqs_time[0][0].index._values
 
@@ -826,6 +834,22 @@ def correct_static(seq, seqs_time, idx_sample, idx_time):
 
 
 def time_step_blow_up(X_seq, X_stat, y, max_len, ts_info=False, x_time=None, x_time_vals=None, x_statics_vals_corr=None):
+    """
+    Blows up the time steps by generating longer prefixes
+    :param X_seq: Sequential Feature Dataset
+    :param X_stat: Static Feature Dataset
+    :param y: Target attribute
+    :param max_len: Determines the length of the second dimension of vectorized return variable X_seq_final
+    :param ts_info: Bool, if true, additional time step information will be returned as well
+    :param x_time: By default None. Point in time used for deleting prefixes
+    :param x_time_vals: By default None. A list of time stemps for every sequenz in X_seq
+    :param x_statics_vals_corr: Never used, is None by default
+    :return: 4 return values:
+        X_seq_final: A 3-dimensional Numpy Array representing the prefixes of the sequential Dataset as a vector
+        X_static_final: A 2-dimensional Numpy Array representing the prefixes of the static Dataset as a vector
+        y_final: A Numpy Array containing the target attribute for every sequence
+        ts: Additional timestemp information (optional)
+    """
 
     X_seq_prefix, X_stat_prefix, y_prefix, x_time_vals_prefix, ts = [], [], [], [], []
 
@@ -867,6 +891,20 @@ def time_step_blow_up(X_seq, X_stat, y, max_len, ts_info=False, x_time=None, x_t
 
 
 def evaluate_on_cut(x_seqs, x_statics, y, mode, target_activity, data_set, hpos, hpo, x_time=None, x_statics_vals_corr=None):
+    """
+
+    :param x_seqs:
+    :param x_statics:
+    :param y:
+    :param mode:
+    :param target_activity:
+    :param data_set:
+    :param hpos:
+    :param hpo:
+    :param x_time:
+    :param x_statics_vals_corr:
+    :return:
+    """
     data_index = list(range(0, len(y)))
     val_index = data_index[int(train_size * (1 - val_size) * len(y)): int(train_size * len(y))]
     test_index = data_index[int(train_size * len(y)):]
@@ -1144,6 +1182,19 @@ def evaluate_on_cut(x_seqs, x_statics, y, mode, target_activity, data_set, hpos,
 
 def run_coefficient(x_seqs_train, x_statics_train, y_train, x_seqs_val, x_statics_val, y_val, target_activity,
                     static_features, best_hpos_repetitions):
+    """
+
+    :param x_seqs_train: Sequencial trainings dataset
+    :param x_statics_train: Static trainings dataset
+    :param y_train: Target attribute trainings dataset
+    :param x_seqs_val: Sequencial validation dataset
+    :param x_statics_val: Static validation dataset
+    :param y_val: Target attribute validation dataset
+    :param target_activity:
+    :param static_features:
+    :param best_hpos_repetitions:
+    :return:
+    """
     model = train_lstm(x_seqs_train, x_statics_train, y_train, x_seqs_val, x_statics_val, y_val, best_hpos_repetitions,
                        False, mode="complete")
     output_weights = model.get_layer(name='output_layer').get_weights()[0].flatten()[2 * best_hpos_repetitions['size']:]
