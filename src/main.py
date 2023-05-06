@@ -430,6 +430,24 @@ def train_knn(x_train_seq, x_train_stat, y_train, x_val_seq, x_val_stat, y_val, 
 
 def train_lstm(x_train_seq, x_train_stat, y_train, x_val_seq=False, x_val_stat=False, y_val=False, hpos=False,
                hpo=False, mode="complete"):
+    """
+    Trains a Long Short-Term Memory model with the Input data and returns the model as well as the Hyperparameter Optimizations, if needed.
+    Best hpos will be saved in an external file.
+
+    :param x_train_seq: Trainingsdataset (sequential Features); multidimensional Numpy Array
+    :param x_train_stat: Trainingsdataset (static Features); multidimensional Numpy Array
+    :param y_train: Trainingsdataset (Prediction); multidimensional Numpy Array
+    :param x_val_seq: Validation dataset (sequential Features); multidimensional Numpy Array
+    :param x_val_stat: Validation dataset (static Features); multidimensional Numpy Array
+    :param y_val: Validation dataset (Prediction); multidimensional Numpy Array
+    :param hpos: Hyperparameter Optimizations; Dictionary
+    :param hpo: Bool; True: model and hpos will be determined and returned | False: only model will be returned
+    :param mode: Determines if the sequencial, static or both datasets are used for training the model; String.
+        mode = "complete": Both datasets will be used (standard setting)
+        mode = "static": Only the static features will be used
+        mode = "sequential": Only the sequential features will be used
+    :return: Machine Learning Model and Hyperparameter Optimizations or just the Machine Learning Model
+    """
     max_case_len = x_train_seq.shape[1]
     num_features_seq = x_train_seq.shape[2]
     num_features_stat = x_train_stat.shape[1]
