@@ -89,9 +89,3 @@ def plot_box_plots(coefs_1):
 
 
 plot_box_plots(coefs_task_1)
-
-#--- DELETE BEFORE MERGE!!! ---
-test = dict(zip(static_features, np.array(coef_values_task_1)))
-print(test.values())
-plot_box_plots(test)
-plt.show()

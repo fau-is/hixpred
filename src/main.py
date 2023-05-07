@@ -892,18 +892,25 @@ def time_step_blow_up(X_seq, X_stat, y, max_len, ts_info=False, x_time=None, x_t
 
 def evaluate_on_cut(x_seqs, x_statics, y, mode, target_activity, data_set, hpos, hpo, x_time=None, x_statics_vals_corr=None):
     """
-
-    :param x_seqs:
-    :param x_statics:
-    :param y:
-    :param mode:
-    :param target_activity:
-    :param data_set:
-    :param hpos:
-    :param hpo:
-    :param x_time:
-    :param x_statics_vals_corr:
-    :return:
+    Evaluates
+    :param x_seqs: Sequential Features Datasets
+    :param x_statics: Static Features Datasets
+    :param y: Target attribute
+    :param mode: Determines how the ML model will be traines; string
+    :param target_activity: target activity of the dataset
+    :param data_set: Dataset
+    :param hpos: Hyperparameter Optimizations; Dictionary
+    :param hpo: Bool; True: model and hpos will be determined and returned by the called training functions | False: only model will be returned by the called training functions
+    :param x_time: List if Timestemps; None by default
+    :param x_statics_vals_corr: Corrected values of static features; None by default
+    :return: Multiple objects:
+        X_train_seq = Sequential Data for training; A 3-dimensional Numpy Array representing the prefixes of the sequential Dataset as a vector (compare time_step_blow_up())
+        X_train_stat = Static Data for training; A 2-dimensional Numpy Array representing the prefixes of the static Dataset as a vector (compare time_step_blow_up())
+        y_train = Target attribute for training; A Numpy Array containing the target attribute for every sequence (compare time_step_blow_up())
+        X_val_seq =Sequential Data for validation; A 3-dimensional Numpy Array representing the prefixes of the sequential Dataset as a vector (compare time_step_blow_up())
+        X_val_stat = Static Data for validation; A 2-dimensional Numpy Array representing the prefixes of the static Dataset as a vector (compare time_step_blow_up())
+        y_val = Target attribute for validation; A Numpy Array containing the target attribute for every sequence (compare time_step_blow_up())
+        best_hpos_repetitions = best hpos. Value = "", if hpo = False
     """
     data_index = list(range(0, len(y)))
     val_index = data_index[int(train_size * (1 - val_size) * len(y)): int(train_size * len(y))]
@@ -1183,17 +1190,17 @@ def evaluate_on_cut(x_seqs, x_statics, y, mode, target_activity, data_set, hpos,
 def run_coefficient(x_seqs_train, x_statics_train, y_train, x_seqs_val, x_statics_val, y_val, target_activity,
                     static_features, best_hpos_repetitions):
     """
-
+    Trains a ML model with lstm, writes the weights for the static attributes into a file and returns the ML model
     :param x_seqs_train: Sequencial trainings dataset
     :param x_statics_train: Static trainings dataset
     :param y_train: Target attribute trainings dataset
     :param x_seqs_val: Sequencial validation dataset
     :param x_statics_val: Static validation dataset
     :param y_val: Target attribute validation dataset
-    :param target_activity:
-    :param static_features:
-    :param best_hpos_repetitions:
-    :return:
+    :param target_activity: Target activity of the dataset
+    :param static_features: List of the names of the static features
+    :param best_hpos_repetitions: A dictionary with informations about the best hyperoptimization parameters for the model
+    :return: lstm trained ML model
     """
     model = train_lstm(x_seqs_train, x_statics_train, y_train, x_seqs_val, x_statics_val, y_val, best_hpos_repetitions,
                        False, mode="complete")
