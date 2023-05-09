@@ -5,17 +5,17 @@ import numpy as np
 
 def get_sepsis_data(target_activity, max_len, min_len):
     """
-    Creates sequences from the sepsis dataset
+    creates sequences from the sepsis dataset.
     :param target_activity:
-    :param max_len: Numerical value. Determines the maximal length of the retruned lists
-    :param min_len: Numerical value. Determines the minimal length of the retruned lists
-    :return: Six lists.
-        x_seqs_ : One-Hot coded Sequence List, storing the values of the sequential_features (?)
-        x_statics_ : List of arrays, storing the values of the static_features (?)
-        y_ : Numerical List. Each entry is either 0 or 1. 0 if target_activity is not in sequence, 1 if target_activity is in sequence
-        x_time_vals_ : List of Lists containing Timestemps (?)
-        seq_features : List of strings storing sequence features
-        static_features : List of strings storing static features
+    :param max_len: determines the maximal length of the returned lists
+    :param min_len: determines the minimal length of the returned lists
+    :return: six lists.
+        x_seqs_ : one-hot coded sequence List, storing the values of the sequential_features
+        x_statics_ : list of arrays, storing the values of the static_features (?)
+        y_ : numerical list. each entry is either 0 or 1. 0 if target_activity is not in sequence, 1 if target_activity is in sequence
+        x_time_vals_ : list of lists containing timestamps (?)
+        seq_features : list of sequence features
+        static_features : list of static features
     """
     ds_path = '../data/Sepsis Cases - Event Log.csv'
 

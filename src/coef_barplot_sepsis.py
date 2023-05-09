@@ -21,10 +21,10 @@ coefs_task_1 = dict(zip([x for x in static_features], np.array(coef_values_task_
 
 def colors_from_values(values, palette_name):
     """
-    Returns a color palette based on numeric values. The colors are determined by the values
-    :param values: NumPy Array with numerical values
-    :param palette_name: Name of the color palette, can be None
-    :return: NumPy-Array storing colors
+    returns a color palette based on numeric values. The colors are determined by the values.
+    :param values: array with numerical values
+    :param palette_name: name of the color palette, can be none
+    :return: array storing colors
     """
     normalized = (values - min(values)) / (max(values) - min(values))
     indices = np.round(normalized * (len(values) - 1)).astype(np.int32)
@@ -34,10 +34,10 @@ def colors_from_values(values, palette_name):
 
 def my_palplot(pal, size=1, ax=None):
     '''
-    Creates a plot for the colors of the given palette
-    :param pal: Color Palette
-    :param size: x and y size of the plot. Irrelevant if ax not None
-    :param ax: Mathplotlib subplot
+    creates a plot for the colors of the given palette.
+    :param pal: color palette
+    :param size: x and y size of the plot. irrelevant if ax not none
+    :param ax: subplot; none by default
     '''
     n = 5
     if ax is None:
@@ -49,8 +49,8 @@ def my_palplot(pal, size=1, ax=None):
 
 def plot_box_plots(coefs_1):
     '''
-    Creates a box plot from the input dictionary using different colors. box plot is saved in plots folder
-    :param coefs_1:A dictionary. It's values() function has to return a NumPy Array
+    creates a box plot from the input dictionary using different colors. box plot is saved in plots folder.
+    :param coefs_1: values to plot
     '''
     matplotlib.rcParams.update({'font.size': 20, 'figure.figsize': (8,8)})
     

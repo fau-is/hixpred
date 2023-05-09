@@ -7,7 +7,6 @@ import pickle
 from sklearn import metrics
 from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier, AdaBoostClassifier
-from sklearn.svm import SVC
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.naive_bayes import GaussianNB
 from sklearn.tree import DecisionTreeClassifier
@@ -31,10 +30,10 @@ hpo = True
 
 def concatenate_tensor_matrix(x_seq, x_stat):
     """
-    Concatenates two multidimensional numpy Arrays and returns them as a single Array, shaped like a matrix
-    :param x_seq: multidimensional Numpy Array
-    :param x_stat: multidimensional Numpy Array
-    :return: Concatenated numpy Array
+    concatenates two datasets and returns them as a matrix.
+    :param x_seq: dataset of sequential features
+    :param x_stat: dataset of static features
+    :return: concatenated dataset containing static and sequential features
     """
     x_train_seq_ = x_seq.reshape(-1, x_seq.shape[1] * x_seq.shape[2])
     x_concat = np.concatenate((x_train_seq_, x_stat), axis=1)
@@ -42,31 +41,31 @@ def concatenate_tensor_matrix(x_seq, x_stat):
     return x_concat
 
 
-def train_rf(x_train_seq, x_train_stat, y_train, x_val_seq, x_val_stat, y_val, hpos, hpo):
+def train_rf(x_train_seq, x_train_stat, y_train, x_val_seq, x_val_stat, y_val, hps, hpo):
     """
-    Trains a ML model with the Input data using the Random Forest Classifier and returns the model as well as the Hyperparameter Optimizations, if needed.
-    Best hpos will be saved in an external file.
-    :param x_train_seq: Trainingsdataset (sequential Features); multidimensional Numpy Array
-    :param x_train_stat: Trainingsdataset (static Features); multidimensional Numpy Array
-    :param y_train: Trainingsdataset (Prediction); multidimensional Numpy Array
-    :param x_val_seq: Validation dataset (sequential Features); multidimensional Numpy Array
-    :param x_val_stat: Validation dataset (static Features); multidimensional Numpy Array
-    :param y_val: Validation dataset (Prediction); multidimensional Numpy Array
-    :param hpos: Hyperparameter Optimizations; Dictionary
-    :param hpo: Bool; True: model and hpos will be determined and returned | False: only model will be returned
-    :return: Machine Learning Model and Hyperparameter Optimizations or just the Machine Learning Model
+    trains a ml model with the input data using the random forest classifier and returns the model as well as the hyperparameters, if needed.
+    best hps will be saved in an external file.
+    :param x_train_seq: trainingsdataset (sequential Features)
+    :param x_train_stat: trainingsdataset (static Features)
+    :param y_train: trainingsdataset (target attribute)
+    :param x_val_seq: validation dataset (sequential Features)
+    :param x_val_stat: validation dataset (static Features)
+    :param y_val: validation dataset (target attribute)
+    :param hps: hyperparameters
+    :param hpo: true: model and hps will be determined and returned | false: only model will be returned
+    :return: ml model and hyperparameters or just the ml model
     """
     x_concat_train = concatenate_tensor_matrix(x_train_seq, x_train_stat)
     x_concat_val = concatenate_tensor_matrix(x_val_seq, x_val_stat)
 
     if hpo:
         best_model = ""
-        best_hpos = ""
+        best_hps = ""
         aucs = []
 
-        for num_trees in hpos["rf"]["num_trees"]:
-            for max_depth_trees in hpos["rf"]["max_depth_trees"]:
-                for num_rand_vars in hpos["rf"]["num_rand_vars"]:
+        for num_trees in hps["rf"]["num_trees"]:
+            for max_depth_trees in hps["rf"]["max_depth_trees"]:
+                for num_rand_vars in hps["rf"]["num_rand_vars"]:
 
                     model = RandomForestClassifier(n_estimators=num_trees, max_depth=max_depth_trees,
                                                    max_features=num_rand_vars)
@@ -78,17 +77,17 @@ def train_rf(x_train_seq, x_train_stat, y_train, x_val_seq, x_val_stat, y_val, h
 
                     if auc >= max(aucs):
                         best_model = model
-                        best_hpos = {"num_trees": num_trees, "max_depth_trees": max_depth_trees,
+                        best_hps = {"num_trees": num_trees, "max_depth_trees": max_depth_trees,
                                      "num_rand_vars": num_rand_vars}
 
         f = open(f'../output/{data_set}_{mode}_{target_activity}_hpos.txt', 'a+')
-        f.write(str(best_hpos))
+        f.write(str(best_hps))
         f.write("Validation aucs," + ",".join([str(x) for x in aucs]) + '\n')
         f.write(f'Avg,{sum(aucs) / len(aucs)}\n')
         f.write(f'Std,{np.std(aucs, ddof=1)}\n')
         f.close()
 
-        return best_model, best_hpos
+        return best_model, best_hps
 
     else:
         x_concat = np.concatenate((x_concat_train, x_concat_val), axis=0)
@@ -100,19 +99,19 @@ def train_rf(x_train_seq, x_train_stat, y_train, x_val_seq, x_val_stat, y_val, h
         return model
 
 
-def train_lr(x_train_seq, x_train_stat, y_train, x_val_seq, x_val_stat, y_val, hpos, hpo):
+def train_lr(x_train_seq, x_train_stat, y_train, x_val_seq, x_val_stat, y_val, hps, hpo):
     """
-    Trains a ML model with the Input data using Logistic Regression and returns the model as well as the Hyperparameter Optimizations, if needed.
-    Best hpos will be saved in an external file.
-    :param x_train_seq: Trainingsdataset (sequential Features); multidimensional Numpy Array
-    :param x_train_stat: Trainingsdataset (static Features); multidimensional Numpy Array
-    :param y_train: Trainingsdataset (Prediction); multidimensional Numpy Array
-    :param x_val_seq: Validation dataset (sequential Features); multidimensional Numpy Array
-    :param x_val_stat: Validation dataset (static Features); multidimensional Numpy Array
-    :param y_val: Validation dataset (Prediction); multidimensional Numpy Array
-    :param hpos: Hyperparameter Optimizations; Dictionary
-    :param hpo: Bool; True: model and hpos will be determined and returned | False: only model will be returned
-    :return: Machine Learning Model and Hyperparameter Optimizations or just the Machine Learning Model
+    trains a ml model with the input data using the logistic regression classifier and returns the model as well as the hyperparameters,if selected.
+    best hps will be saved in an external file.
+    :param x_train_seq: trainingsdataset (sequential Features)
+    :param x_train_stat: trainingsdataset (static Features)
+    :param y_train: trainingsdataset (target attribute)
+    :param x_val_seq: validation dataset (sequential Features)
+    :param x_val_stat: validation dataset (static Features)
+    :param y_val: validation dataset (target attribute)
+    :param hps: hyperparameters
+    :param hpo: true: model and hps will be determined and returned | false: only model will be returned
+    :return: ml model and hyperparameters or just the ml model
     """
     x_concat_train = concatenate_tensor_matrix(x_train_seq, x_train_stat)
     x_concat_val = concatenate_tensor_matrix(x_val_seq, x_val_stat)
@@ -122,8 +121,8 @@ def train_lr(x_train_seq, x_train_stat, y_train, x_val_seq, x_val_stat, y_val, h
         best_hpos = ""
         aucs = []
 
-        for c in hpos["lr"]["reg_strength"]:
-            for solver in hpos["lr"]["solver"]:
+        for c in hps["lr"]["reg_strength"]:
+            for solver in hps["lr"]["solver"]:
 
                 model = LogisticRegression(C=c, solver=solver)
                 model.fit(x_concat_train, np.ravel(y_train))
@@ -155,74 +154,19 @@ def train_lr(x_train_seq, x_train_stat, y_train, x_val_seq, x_val_stat, y_val, h
         return model
 
 
-def train_svm(x_train_seq, x_train_stat, y_train, x_val_seq, x_val_stat, y_val, hpos, hpo):
+def train_gb(x_train_seq, x_train_stat, y_train, x_val_seq, x_val_stat, y_val, hps, hpo):
     """
-    Trains a ML model with the Input data using Support Vector Classification and returns the model as well as the Hyperparameter Optimizations, if needed.
-    Best hpos will be saved in an external file.
-    :param x_train_seq: Trainingsdataset (sequential Features); multidimensional Numpy Array
-    :param x_train_stat: Trainingsdataset (static Features); multidimensional Numpy Array
-    :param y_train: Trainingsdataset (Prediction); multidimensional Numpy Array
-    :param x_val_seq: Validation dataset (sequential Features); multidimensional Numpy Array
-    :param x_val_stat: Validation dataset (static Features); multidimensional Numpy Array
-    :param y_val: Validation dataset (Prediction); multidimensional Numpy Array
-    :param hpos: Hyperparameter Optimizations; Dictionary
-    :param hpo: Bool; True: model and hpos will be determined and returned | False: only model will be returned
-    :return: Machine Learning Model and Hyperparameter Optimizations or just the Machine Learning Model
-    """
-    x_concat_train = concatenate_tensor_matrix(x_train_seq, x_train_stat)
-    x_concat_val = concatenate_tensor_matrix(x_val_seq, x_val_stat)
-
-    if hpo:
-        best_model = ""
-        best_hpos = ""
-        aucs = []
-
-        for kern_fkt in hpos["svm"]["kern_fkt"]:
-            for cost in hpos["svm"]["cost"]:
-
-                model = SVC(C=cost, kernel=kern_fkt, probability=True)
-                model.fit(x_concat_train, np.ravel(y_train))
-                preds_proba = model.predict_proba(x_concat_val)
-                preds_proba = [pred_proba[1] for pred_proba in preds_proba]
-                auc = metrics.roc_auc_score(y_true=y_val, y_score=preds_proba)
-                aucs.append(auc)
-
-                if auc >= max(aucs):
-                    best_model = model
-                    best_hpos = {"cost": cost, "kernel": kern_fkt}
-
-        f = open(f'../output/{data_set}_{mode}_{target_activity}_hpos.txt', 'a+')
-        f.write(str(best_hpos))
-        f.write("Validation aucs," + ",".join([str(x) for x in aucs]) + '\n')
-        f.write(f'Avg,{sum(aucs) / len(aucs)}\n')
-        f.write(f'Std,{np.std(aucs, ddof=1)}\n')
-        f.close()
-
-        return best_model, best_hpos
-
-    else:
-        x_concat = np.concatenate((x_concat_train, x_concat_val), axis=0)
-        y = np.concatenate((y_train, y_val), axis=0)
-
-        model = SVC(probability=True)
-        model.fit(x_concat, np.ravel(y))
-
-        return model
-
-
-def train_gb(x_train_seq, x_train_stat, y_train, x_val_seq, x_val_stat, y_val, hpos, hpo):
-    """
-    Trains a ML model with the Input data using Gradient Boosting Classifier and returns the model as well as the Hyperparameter Optimizations, if needed.
-    Best hpos will be saved in an external file.
-    :param x_train_seq: Trainingsdataset (sequential Features); multidimensional Numpy Array
-    :param x_train_stat: Trainingsdataset (static Features); multidimensional Numpy Array
-    :param y_train: Trainingsdataset (Prediction); multidimensional Numpy Array
-    :param x_val_seq: Validation dataset (sequential Features); multidimensional Numpy Array
-    :param x_val_stat: Validation dataset (static Features); multidimensional Numpy Array
-    :param y_val: Validation dataset (Prediction); multidimensional Numpy Array
-    :param hpos: Hyperparameter Optimizations; Dictionary
-    :param hpo: Bool; True: model and hpos will be determined and returned | False: only model will be returned
-    :return: Machine Learning Model and Hyperparameter Optimizations or just the Machine Learning Model
+    trains a ml model with the input data using the gradient boosting classifier and returns the model as well as the hyperparameters,if selected.
+    best hps will be saved in an external file.
+    :param x_train_seq: trainingsdataset (sequential Features)
+    :param x_train_stat: trainingsdataset (static Features)
+    :param y_train: trainingsdataset (target attribute)
+    :param x_val_seq: validation dataset (sequential Features)
+    :param x_val_stat: validation dataset (static Features)
+    :param y_val: validation dataset (target attribute)
+    :param hps: hyperparameters
+    :param hpo: true: model and hps will be determined and returned | false: only model will be returned
+    :return: ml model and hyperparameters or just the ml model
     """
     x_concat_train = concatenate_tensor_matrix(x_train_seq, x_train_stat)
     x_concat_val = concatenate_tensor_matrix(x_val_seq, x_val_stat)
@@ -232,8 +176,8 @@ def train_gb(x_train_seq, x_train_stat, y_train, x_val_seq, x_val_stat, y_val, h
         best_hpos = ""
         aucs = []
 
-        for n_estimators in hpos["gb"]["n_estimators"]:
-            for learning_rate in hpos["gb"]["learning_rate"]:
+        for n_estimators in hps["gb"]["n_estimators"]:
+            for learning_rate in hps["gb"]["learning_rate"]:
 
                 model = GradientBoostingClassifier(n_estimators=n_estimators, learning_rate=learning_rate)
                 model.fit(x_concat_train, np.ravel(y_train))
@@ -265,19 +209,19 @@ def train_gb(x_train_seq, x_train_stat, y_train, x_val_seq, x_val_stat, y_val, h
         return model
 
 
-def train_ada(x_train_seq, x_train_stat, y_train, x_val_seq, x_val_stat, y_val, hpos, hpo):
+def train_ada(x_train_seq, x_train_stat, y_train, x_val_seq, x_val_stat, y_val, hps, hpo):
     """
-    Trains a ML model with the Input data using Ada Boost Classification and returns the model as well as the Hyperparameter Optimizations, if needed.
-    Best hpos will be saved in an external file.
-    :param x_train_seq: Trainingsdataset (sequential Features); multidimensional Numpy Array
-    :param x_train_stat: Trainingsdataset (static Features); multidimensional Numpy Array
-    :param y_train: Trainingsdataset (Prediction); multidimensional Numpy Array
-    :param x_val_seq: Validation dataset (sequential Features); multidimensional Numpy Array
-    :param x_val_stat: Validation dataset (static Features); multidimensional Numpy Array
-    :param y_val: Validation dataset (Prediction); multidimensional Numpy Array
-    :param hpos: Hyperparameter Optimizations; Dictionary
-    :param hpo: Bool; True: model and hpos will be determined and returned | False: only model will be returned
-    :return: Machine Learning Model and Hyperparameter Optimizations or just the Machine Learning Model
+    trains a ml model with the input data using the ada boost classification and returns the model as well as the hyperparameters, if needed.
+    best hps will be saved in an external file.
+    :param x_train_seq: trainingsdataset (sequential Features)
+    :param x_train_stat: trainingsdataset (static Features)
+    :param y_train: trainingsdataset (target attribute)
+    :param x_val_seq: validation dataset (sequential Features)
+    :param x_val_stat: validation dataset (static Features)
+    :param y_val: validation dataset (target attribute)
+    :param hps: hyperparameters
+    :param hpo: true: model and hps will be determined and returned | false: only model will be returned
+    :return: ml model and hyperparameters or just the ml model
     """
     x_concat_train = concatenate_tensor_matrix(x_train_seq, x_train_stat)
     x_concat_val = concatenate_tensor_matrix(x_val_seq, x_val_stat)
@@ -287,8 +231,8 @@ def train_ada(x_train_seq, x_train_stat, y_train, x_val_seq, x_val_stat, y_val, 
         best_hpos = ""
         aucs = []
 
-        for n_estimators in hpos["ada"]["n_estimators"]:
-            for learning_rate in hpos["ada"]["learning_rate"]:
+        for n_estimators in hps["ada"]["n_estimators"]:
+            for learning_rate in hps["ada"]["learning_rate"]:
 
                 model = AdaBoostClassifier(n_estimators=n_estimators, learning_rate=learning_rate)
                 model.fit(x_concat_train, np.ravel(y_train))
@@ -320,19 +264,19 @@ def train_ada(x_train_seq, x_train_stat, y_train, x_val_seq, x_val_stat, y_val, 
         return model
 
 
-def train_nb(x_train_seq, x_train_stat, y_train, x_val_seq, x_val_stat, y_val, hpos, hpo):
+def train_nb(x_train_seq, x_train_stat, y_train, x_val_seq, x_val_stat, y_val, hps, hpo):
     """
-    Trains a ML model with the Input data using Gaussian Naive Bayes Classification and returns the model as well as the Hyperparameter Optimizations, if needed.
-    Best hpos will be saved in an external file.
-    :param x_train_seq: Trainingsdataset (sequential Features); multidimensional Numpy Array
-    :param x_train_stat: Trainingsdataset (static Features); multidimensional Numpy Array
-    :param y_train: Trainingsdataset (Prediction); multidimensional Numpy Array
-    :param x_val_seq: Validation dataset (sequential Features); multidimensional Numpy Array
-    :param x_val_stat: Validation dataset (static Features); multidimensional Numpy Array
-    :param y_val: Validation dataset (Prediction); multidimensional Numpy Array
-    :param hpos: Hyperparameter Optimizations; Dictionary
-    :param hpo: Bool; True: model and hpos will be determined and returned | False: only model will be returned
-    :return: Machine Learning Model and Hyperparameter Optimizations or just the Machine Learning Model
+    trains a ml model with the input data using the naive bayes classification and returns the model as well as the hyperparameters, if needed.
+    best hps will be saved in an external file.
+    :param x_train_seq: trainingsdataset (sequential Features)
+    :param x_train_stat: trainingsdataset (static Features)
+    :param y_train: trainingsdataset (target attribute)
+    :param x_val_seq: validation dataset (sequential Features)
+    :param x_val_stat: validation dataset (static Features)
+    :param y_val: validation dataset (target attribute)
+    :param hps: hyperparameters
+    :param hpo: true: model and hps will be determined and returned | false: only model will be returned
+    :return: ml model and hyperparameters or just the ml model
     """
     x_concat_train = concatenate_tensor_matrix(x_train_seq, x_train_stat)
     x_concat_val = concatenate_tensor_matrix(x_val_seq, x_val_stat)
@@ -342,7 +286,7 @@ def train_nb(x_train_seq, x_train_stat, y_train, x_val_seq, x_val_stat, y_val, h
         best_hpos = ""
         aucs = []
 
-        for var_smoothing in hpos["nb"]["var_smoothing"]:
+        for var_smoothing in hps["nb"]["var_smoothing"]:
 
             model = GaussianNB(var_smoothing=var_smoothing)
             model.fit(x_concat_train, np.ravel(y_train))
@@ -374,19 +318,19 @@ def train_nb(x_train_seq, x_train_stat, y_train, x_val_seq, x_val_stat, y_val, h
         return model
 
 
-def train_knn(x_train_seq, x_train_stat, y_train, x_val_seq, x_val_stat, y_val, hpos, hpo):
+def train_knn(x_train_seq, x_train_stat, y_train, x_val_seq, x_val_stat, y_val, hps, hpo):
     """
-    Trains a ML model with the Input data using Gaussian K-nearest Neighbors Classification and returns the model as well as the Hyperparameter Optimizations, if needed.
-    Best hpos will be saved in an external file.
-    :param x_train_seq: Trainingsdataset (sequential Features); multidimensional Numpy Array
-    :param x_train_stat: Trainingsdataset (static Features); multidimensional Numpy Array
-    :param y_train: Trainingsdataset (Prediction); multidimensional Numpy Array
-    :param x_val_seq: Validation dataset (sequential Features); multidimensional Numpy Array
-    :param x_val_stat: Validation dataset (static Features); multidimensional Numpy Array
-    :param y_val: Validation dataset (Prediction); multidimensional Numpy Array
-    :param hpos: Hyperparameter Optimizations; Dictionary
-    :param hpo: Bool; True: model and hpos will be determined and returned | False: only model will be returned
-    :return: Machine Learning Model and Hyperparameter Optimizations or just the Machine Learning Model
+    trains a ml model with the input data using the gaussian k-nearest neighbors classification and returns the model as well as the hyperparameters,if selected.
+    best hps will be saved in an external file.
+    :param x_train_seq: trainingsdataset (sequential Features)
+    :param x_train_stat: trainingsdataset (static Features)
+    :param y_train: trainingsdataset (target attribute)
+    :param x_val_seq: validation dataset (sequential Features)
+    :param x_val_stat: validation dataset (static Features)
+    :param y_val: validation dataset (target attribute)
+    :param hps: hyperparameters
+    :param hpo: true: model and hps will be determined and returned | false: only model will be returned
+    :return: ml model and hyperparameters or just the ml model
     """
     x_concat_train = concatenate_tensor_matrix(x_train_seq, x_train_stat)
     x_concat_val = concatenate_tensor_matrix(x_val_seq, x_val_stat)
@@ -396,7 +340,7 @@ def train_knn(x_train_seq, x_train_stat, y_train, x_val_seq, x_val_stat, y_val, 
         best_hpos = ""
         aucs = []
 
-        for n_neighbors in hpos["knn"]["n_neighbors"]:
+        for n_neighbors in hps["knn"]["n_neighbors"]:
 
             model = KNeighborsClassifier(n_neighbors=n_neighbors)
             model.fit(x_concat_train, np.ravel(y_train))
@@ -428,25 +372,25 @@ def train_knn(x_train_seq, x_train_stat, y_train, x_val_seq, x_val_stat, y_val, 
         return model
 
 
-def train_lstm(x_train_seq, x_train_stat, y_train, x_val_seq=False, x_val_stat=False, y_val=False, hpos=False,
+
+def train_lstm(x_train_seq, x_train_stat, y_train, x_val_seq=False, x_val_stat=False, y_val=False, hps=False,
                hpo=False, mode="complete"):
     """
-    Trains a Long Short-Term Memory model with the Input data and returns the model as well as the Hyperparameter Optimizations, if needed.
-    Best hpos will be saved in an external file.
-
-    :param x_train_seq: Trainingsdataset (sequential Features); multidimensional Numpy Array
-    :param x_train_stat: Trainingsdataset (static Features); multidimensional Numpy Array
-    :param y_train: Trainingsdataset (Prediction); multidimensional Numpy Array
-    :param x_val_seq: Validation dataset (sequential Features); multidimensional Numpy Array
-    :param x_val_stat: Validation dataset (static Features); multidimensional Numpy Array
-    :param y_val: Validation dataset (Prediction); multidimensional Numpy Array
-    :param hpos: Hyperparameter Optimizations; Dictionary
-    :param hpo: Bool; True: model and hpos will be determined and returned | False: only model will be returned
-    :param mode: Determines if the sequencial, static or both datasets are used for training the model; String.
-        mode = "complete": Both datasets will be used (standard setting)
-        mode = "static": Only the static features will be used
-        mode = "sequential": Only the sequential features will be used
-    :return: Machine Learning Model and Hyperparameter Optimizations or just the Machine Learning Model
+    trains a long short-term memory model with the input data and returns the model as well as the hyperparameters,if selected.
+    best hps will be saved in an external file.
+    :param x_train_seq: trainingsdataset (sequential Features)
+    :param x_train_stat: trainingsdataset (static Features)
+    :param y_train: trainingsdataset (target attribute)
+    :param x_val_seq: validation dataset (sequential Features)
+    :param x_val_stat: validation dataset (static Features)
+    :param y_val: validation dataset (target attribute)
+    :param hps: hyperparameters
+    :param hpo: true: model and hps will be determined and returned | false: only model will be returned
+    :param mode: determines if the sequential, static or both datasets are used for training the model
+        mode = "complete": both datasets will be used (default setting)
+        mode = "static": only the static features will be used
+        mode = "sequential": only the sequential features will be used
+    :return: ml model and hyperparameters or just the ml model
     """
     max_case_len = x_train_seq.shape[1]
     num_features_seq = x_train_seq.shape[2]
@@ -459,9 +403,9 @@ def train_lstm(x_train_seq, x_train_stat, y_train, x_val_seq=False, x_val_stat=F
             best_hpos = ""
             aucs = []
 
-            for size in hpos["complete"]["size"]:
-                for learning_rate in hpos["complete"]["learning_rate"]:
-                    for batch_size in hpos["complete"]["batch_size"]:
+            for size in hps["complete"]["size"]:
+                for learning_rate in hps["complete"]["learning_rate"]:
+                    for batch_size in hps["complete"]["batch_size"]:
 
                         input_layer_seq = tf.keras.layers.Input(shape=(max_case_len, num_features_seq),
                                                                 name='seq_input_layer')
@@ -534,7 +478,7 @@ def train_lstm(x_train_seq, x_train_stat, y_train, x_val_seq=False, x_val_stat=F
             input_layer_static = tf.keras.layers.Input(shape=(num_features_stat), name='static_input_layer')
 
             hidden_layer = tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(
-                units=hpos['size'],
+                units=hps['size'],
                 return_sequences=False))(input_layer_seq)
 
             concatenate_layer = tf.keras.layers.Concatenate(axis=1)([hidden_layer, input_layer_static])
@@ -546,7 +490,7 @@ def train_lstm(x_train_seq, x_train_stat, y_train, x_val_seq=False, x_val_stat=F
             model = tf.keras.models.Model(inputs=[input_layer_seq, input_layer_static],
                                           outputs=[output_layer])
 
-            opt = tf.keras.optimizers.Adam(learning_rate=hpos['learning_rate'])
+            opt = tf.keras.optimizers.Adam(learning_rate=hps['learning_rate'])
             model.compile(loss='binary_crossentropy',
                           optimizer=opt,
                           metrics=['accuracy'])
@@ -572,7 +516,7 @@ def train_lstm(x_train_seq, x_train_stat, y_train, x_val_seq=False, x_val_stat=F
                       validation_data=([x_val_seq, x_val_stat], y_val),
                       verbose=1,
                       callbacks=[early_stopping, model_checkpoint, lr_reducer],
-                      batch_size=hpos['batch_size'],
+                      batch_size=hps['batch_size'],
                       epochs=100)
 
             return model
@@ -584,8 +528,8 @@ def train_lstm(x_train_seq, x_train_stat, y_train, x_val_seq=False, x_val_stat=F
             best_hpos = ""
             aucs = []
 
-            for learning_rate in hpos["complete"]["learning_rate"]:
-                for batch_size in hpos["complete"]["batch_size"]:
+            for learning_rate in hps["complete"]["learning_rate"]:
+                for batch_size in hps["complete"]["batch_size"]:
 
                     input_layer_static = tf.keras.layers.Input(shape=(num_features_stat), name='static_input_layer')
 
@@ -693,9 +637,9 @@ def train_lstm(x_train_seq, x_train_stat, y_train, x_val_seq=False, x_val_stat=F
             best_hpos = ""
             aucs = []
 
-            for size in hpos["complete"]["size"]:
-                for learning_rate in hpos["complete"]["learning_rate"]:
-                    for batch_size in hpos["complete"]["batch_size"]:
+            for size in hps["complete"]["size"]:
+                for learning_rate in hps["complete"]["learning_rate"]:
+                    for batch_size in hps["complete"]["batch_size"]:
 
                         input_layer_seq = tf.keras.layers.Input(shape=(max_case_len, num_features_seq),
                                                                 name='seq_input_layer')
@@ -810,11 +754,11 @@ def train_lstm(x_train_seq, x_train_stat, y_train, x_val_seq=False, x_val_stat=F
 
 def correct_static(seq, seqs_time, idx_sample, idx_time):
     """
-    Corrects the static features of a sequence based on seqs_time.
-    :param seq: Sequence with static features that should be corrected; Array
-    :param seqs_time: 2 dimensional matrix, that stores features and their values
-    :param idx_sample: Index determining which sample from seqs_time will be used
-    :param idx_time: Index determining from which time the entries from seqs_time will be selected
+    corrects the static features of a sequence based on seqs_time.
+    :param seq: sequence with static features that should be corrected
+    :param seqs_time: matrix, that stores features and their values
+    :param idx_sample: index determining which sample from seqs_time will be used
+    :param idx_time: index determining from which time the entries from seqs_time will be selected
     :return: Corrected seq
     """
 
@@ -835,20 +779,20 @@ def correct_static(seq, seqs_time, idx_sample, idx_time):
 
 def time_step_blow_up(X_seq, X_stat, y, max_len, ts_info=False, x_time=None, x_time_vals=None, x_statics_vals_corr=None):
     """
-    Blows up the time steps by generating longer prefixes
-    :param X_seq: Sequential Feature Dataset
-    :param X_stat: Static Feature Dataset
-    :param y: Target attribute
-    :param max_len: Determines the length of the second dimension of vectorized return variable X_seq_final
-    :param ts_info: Bool, if true, additional time step information will be returned as well
-    :param x_time: By default None. Point in time used for deleting prefixes
-    :param x_time_vals: By default None. A list of time stemps for every sequenz in X_seq
-    :param x_statics_vals_corr: Never used, is None by default
+    blows up the time steps by generating longer prefixes.
+    :param X_seq: sequential feature dataset
+    :param X_stat: static feature dataset
+    :param y: target attribute
+    :param max_len: determines the length of the second dimension of vectorized return variable X_seq_final
+    :param ts_info: if true, additional time step information will be returned as well
+    :param x_time: by default none. point in time used for deleting prefixes
+    :param x_time_vals: by default none. a list of time stamps for every sequence in X_seq
+    :param x_statics_vals_corr: never used, is none by default
     :return: 4 return values:
-        X_seq_final: A 3-dimensional Numpy Array representing the prefixes of the sequential Dataset as a vector
-        X_static_final: A 2-dimensional Numpy Array representing the prefixes of the static Dataset as a vector
-        y_final: A Numpy Array containing the target attribute for every sequence
-        ts: Additional timestemp information (optional)
+        X_seq_final: a 3-d vector representing the prefixes of the sequential dataset
+        X_static_final: a 2-d vector representing the prefixes of the static dataset
+        y_final: a array containing the target attribute for every sequence
+        ts: additional timestamp information (optional)
     """
 
     X_seq_prefix, X_stat_prefix, y_prefix, x_time_vals_prefix, ts = [], [], [], [], []
@@ -890,27 +834,27 @@ def time_step_blow_up(X_seq, X_stat, y, max_len, ts_info=False, x_time=None, x_t
         return X_seq_final, X_stat_final, y_final
 
 
-def evaluate_on_cut(x_seqs, x_statics, y, mode, target_activity, data_set, hpos, hpo, x_time=None, x_statics_vals_corr=None):
+def evaluate(x_seqs, x_statics, y, mode, target_activity, data_set, hps, hpo, x_time=None, x_statics_vals_corr=None):
     """
-    Evaluates
-    :param x_seqs: Sequential Features Datasets
-    :param x_statics: Static Features Datasets
-    :param y: Target attribute
-    :param mode: Determines how the ML model will be traines; string
+    evaluates the predictive performance of the ml model.
+    :param x_seqs: sequential features datasets
+    :param x_statics: static features datasets
+    :param y: target attribute
+    :param mode: determines how the ml model will be trained
     :param target_activity: target activity of the dataset
-    :param data_set: Dataset
-    :param hpos: Hyperparameter Optimizations; Dictionary
-    :param hpo: Bool; True: model and hpos will be determined and returned by the called training functions | False: only model will be returned by the called training functions
-    :param x_time: List if Timestemps; None by default
-    :param x_statics_vals_corr: Corrected values of static features; None by default
+    :param data_set: dataset
+    :param hps: hyperparameters
+    :param hpo: true: model and hps will be determined and returned by the called training functions | false: only model will be returned by the called training functions
+    :param x_time: list of timestamps; none by default
+    :param x_statics_vals_corr: corrected values of static features; none by default
     :return: Multiple objects:
-        X_train_seq = Sequential Data for training; A 3-dimensional Numpy Array representing the prefixes of the sequential Dataset as a vector (compare time_step_blow_up())
-        X_train_stat = Static Data for training; A 2-dimensional Numpy Array representing the prefixes of the static Dataset as a vector (compare time_step_blow_up())
-        y_train = Target attribute for training; A Numpy Array containing the target attribute for every sequence (compare time_step_blow_up())
-        X_val_seq =Sequential Data for validation; A 3-dimensional Numpy Array representing the prefixes of the sequential Dataset as a vector (compare time_step_blow_up())
-        X_val_stat = Static Data for validation; A 2-dimensional Numpy Array representing the prefixes of the static Dataset as a vector (compare time_step_blow_up())
-        y_val = Target attribute for validation; A Numpy Array containing the target attribute for every sequence (compare time_step_blow_up())
-        best_hpos_repetitions = best hpos. Value = "", if hpo = False
+        X_train_seq = sequential data for training
+        X_train_stat = static Data for training
+        y_train = target attribute for training
+        X_val_seq = sequential data for validation
+        X_val_stat = static Data for validation
+        y_val = target attribute for validation
+        best_hps_repetitions = best hps. value = "", if hpo = false
     """
     data_index = list(range(0, len(y)))
     val_index = data_index[int(train_size * (1 - val_size) * len(y)): int(train_size * len(y))]
@@ -923,7 +867,7 @@ def evaluate_on_cut(x_seqs, x_statics, y, mode, target_activity, data_set, hpos,
         x_time_val = x_time[int(train_size * (1 - val_size) * len(y)): int(train_size * len(y))]
 
     results = {}
-    best_hpos_repetitions = ""
+    best_hps_repetitions = ""
 
     for repetition in range(0, num_repetitions):
 
@@ -1002,72 +946,65 @@ def evaluate_on_cut(x_seqs, x_statics, y, mode, target_activity, data_set, hpos,
         print(0)
 
         if mode == "complete":
-            model, best_hpos = train_lstm(X_train_seq, X_train_stat, y_train.reshape(-1, 1), X_val_seq, X_val_stat,
-                                          y_val.reshape(-1, 1), hpos, hpo, mode)
+            model, best_hps = train_lstm(X_train_seq, X_train_stat, y_train.reshape(-1, 1), X_val_seq, X_val_stat,
+                                          y_val.reshape(-1, 1), hps, hpo, mode)
             preds_proba = model.predict([X_test_seq, X_test_stat])
             results['preds'] = [int(round(pred[0])) for pred in preds_proba]
             results['preds_proba'] = [pred_proba[0] for pred_proba in preds_proba]
 
         elif mode == "static":
-            model, best_hpos = train_lstm(X_train_seq, X_train_stat, y_train.reshape(-1, 1), X_val_seq, X_val_stat,
-                                          y_val.reshape(-1, 1), hpos, hpo, mode)
+            model, best_hps = train_lstm(X_train_seq, X_train_stat, y_train.reshape(-1, 1), X_val_seq, X_val_stat,
+                                          y_val.reshape(-1, 1), hps, hpo, mode)
             preds_proba = model.predict([X_test_stat])
             results['preds'] = [int(round(pred[0])) for pred in preds_proba]
             results['preds_proba'] = [pred_proba[0] for pred_proba in preds_proba]
 
         elif mode == "sequential":
-            model, best_hpos = train_lstm(X_train_seq, X_train_stat, y_train.reshape(-1, 1), X_val_seq, X_val_stat,
-                                          y_val.reshape(-1, 1), hpos, hpo, mode)
+            model, best_hps = train_lstm(X_train_seq, X_train_stat, y_train.reshape(-1, 1), X_val_seq, X_val_stat,
+                                          y_val.reshape(-1, 1), hps, hpo, mode)
             preds_proba = model.predict([X_test_seq])
             results['preds'] = [int(round(pred[0])) for pred in preds_proba]
             results['preds_proba'] = [pred_proba[0] for pred_proba in preds_proba]
 
         elif mode == "rf":
-            model, best_hpos = train_rf(X_train_seq, X_train_stat, y_train.reshape(-1, 1), X_val_seq, X_val_stat,
-                                        y_val.reshape(-1, 1), hpos, hpo)
+            model, best_hps = train_rf(X_train_seq, X_train_stat, y_train.reshape(-1, 1), X_val_seq, X_val_stat,
+                                        y_val.reshape(-1, 1), hps, hpo)
             preds_proba = model.predict_proba(concatenate_tensor_matrix(X_test_seq, X_test_stat))
             results['preds'] = [np.argmax(pred_proba) for pred_proba in preds_proba]
             results['preds_proba'] = [pred_proba[1] for pred_proba in preds_proba]
 
         elif mode == "lr":
-            model, best_hpos = train_lr(X_train_seq, X_train_stat, y_train.reshape(-1, 1), X_val_seq, X_val_stat,
-                                        y_val.reshape(-1, 1), hpos, hpo)
-            preds_proba = model.predict_proba(concatenate_tensor_matrix(X_test_seq, X_test_stat))
-            results['preds'] = [np.argmax(pred_proba) for pred_proba in preds_proba]
-            results['preds_proba'] = [pred_proba[1] for pred_proba in preds_proba]
-
-        elif mode == "svm":
-            model, best_hpos = train_svm(X_train_seq, X_train_stat, y_train.reshape(-1, 1), X_val_seq, X_val_stat,
-                                         y_val.reshape(-1, 1), hpos, hpo)
+            model, best_hps = train_lr(X_train_seq, X_train_stat, y_train.reshape(-1, 1), X_val_seq, X_val_stat,
+                                        y_val.reshape(-1, 1), hps, hpo)
             preds_proba = model.predict_proba(concatenate_tensor_matrix(X_test_seq, X_test_stat))
             results['preds'] = [np.argmax(pred_proba) for pred_proba in preds_proba]
             results['preds_proba'] = [pred_proba[1] for pred_proba in preds_proba]
 
         elif mode == "gb":
-            model, best_hpos = train_gb(X_train_seq, X_train_stat, y_train.reshape(-1, 1), X_val_seq, X_val_stat,
-                                        y_val.reshape(-1, 1), hpos, hpo)
+            model, best_hps = train_gb(X_train_seq, X_train_stat, y_train.reshape(-1, 1), X_val_seq, X_val_stat,
+                                        y_val.reshape(-1, 1), hps, hpo)
             preds_proba = model.predict_proba(concatenate_tensor_matrix(X_test_seq, X_test_stat))
             results['preds'] = [np.argmax(pred_proba) for pred_proba in preds_proba]
             results['preds_proba'] = [pred_proba[1] for pred_proba in preds_proba]
 
         elif mode == "ada":
-            model, best_hpos = train_ada(X_train_seq, X_train_stat, y_train.reshape(-1, 1), X_val_seq, X_val_stat,
-                                         y_val.reshape(-1, 1), hpos, hpo)
+            model, best_hps = train_ada(X_train_seq, X_train_stat, y_train.reshape(-1, 1), X_val_seq, X_val_stat,
+                                         y_val.reshape(-1, 1), hps, hpo)
             preds_proba = model.predict_proba(concatenate_tensor_matrix(X_test_seq, X_test_stat))
             results['preds'] = [np.argmax(pred_proba) for pred_proba in preds_proba]
             results['preds_proba'] = [pred_proba[1] for pred_proba in preds_proba]
 
         elif mode == "nb":
-            model, best_hpos = train_nb(X_train_seq, X_train_stat, y_train.reshape(-1, 1), X_val_seq, X_val_stat,
-                                        y_val.reshape(-1, 1), hpos, hpo)
+            model, best_hps = train_nb(X_train_seq, X_train_stat, y_train.reshape(-1, 1), X_val_seq, X_val_stat,
+                                        y_val.reshape(-1, 1), hps, hpo)
             preds_proba = model.predict_proba(concatenate_tensor_matrix(X_test_seq, X_test_stat))
             results['preds'] = [np.argmax(pred_proba) for pred_proba in preds_proba]
             results['preds_proba'] = [pred_proba[1] for pred_proba in preds_proba]
 
 
         elif mode == "knn":
-            model, best_hpos = train_knn(X_train_seq, X_train_stat, y_train.reshape(-1, 1), X_val_seq, X_val_stat,
-                                         y_val.reshape(-1, 1), hpos, hpo)
+            model, best_hps = train_knn(X_train_seq, X_train_stat, y_train.reshape(-1, 1), X_val_seq, X_val_stat,
+                                         y_val.reshape(-1, 1), hps, hpo)
             preds_proba = model.predict_proba(concatenate_tensor_matrix(X_test_seq, X_test_stat))
             results['preds'] = [np.argmax(pred_proba) for pred_proba in preds_proba]
             results['preds_proba'] = [pred_proba[1] for pred_proba in preds_proba]
@@ -1116,7 +1053,7 @@ def evaluate_on_cut(x_seqs, x_statics, y, mode, target_activity, data_set, hpos,
             results['all']['auc'].append(auc)
 
             if auc >= max(results['all']['auc']):
-                best_hpos_repetitions = best_hpos
+                best_hps_repetitions = best_hps
 
         except:
             pass
@@ -1184,27 +1121,27 @@ def evaluate_on_cut(x_seqs, x_statics, y, mode, target_activity, data_set, hpos,
                 except:
                     pass
 
-    return X_train_seq, X_train_stat, y_train, X_val_seq, X_val_stat, y_val, best_hpos_repetitions
+    return X_train_seq, X_train_stat, y_train, X_val_seq, X_val_stat, y_val, best_hps_repetitions
 
 
 def run_coefficient(x_seqs_train, x_statics_train, y_train, x_seqs_val, x_statics_val, y_val, target_activity,
-                    static_features, best_hpos_repetitions):
+                    static_features, best_hps_repetitions):
     """
-    Trains a ML model with lstm, writes the weights for the static attributes into a file and returns the ML model
-    :param x_seqs_train: Sequencial trainings dataset
-    :param x_statics_train: Static trainings dataset
+    trains a ml model with lstm, writes the weights for the static attributes into a file and returns a ml model.
+    :param x_seqs_train: sequential trainings dataset
+    :param x_statics_train: static trainings dataset
     :param y_train: Target attribute trainings dataset
-    :param x_seqs_val: Sequencial validation dataset
-    :param x_statics_val: Static validation dataset
+    :param x_seqs_val: sequential validation dataset
+    :param x_statics_val: static validation dataset
     :param y_val: Target attribute validation dataset
-    :param target_activity: Target activity of the dataset
-    :param static_features: List of the names of the static features
-    :param best_hpos_repetitions: A dictionary with informations about the best hyperoptimization parameters for the model
-    :return: lstm trained ML model
+    :param target_activity: target activity of the dataset
+    :param static_features: list of the names of the static features
+    :param best_hps_repetitions: A dictionary with informations about the best hyperparameters for the model
+    :return: lstm trained ml model
     """
-    model = train_lstm(x_seqs_train, x_statics_train, y_train, x_seqs_val, x_statics_val, y_val, best_hpos_repetitions,
+    model = train_lstm(x_seqs_train, x_statics_train, y_train, x_seqs_val, x_statics_val, y_val, best_hps_repetitions,
                        False, mode="complete")
-    output_weights = model.get_layer(name='output_layer').get_weights()[0].flatten()[2 * best_hpos_repetitions['size']:]
+    output_weights = model.get_layer(name='output_layer').get_weights()[0].flatten()[2 * best_hps_repetitions['size']:]
     output_names = static_features
 
     f = open(f'../output/{data_set}_{mode}_{target_activity}_coef.txt', 'w')
@@ -1222,7 +1159,7 @@ def run_coefficient(x_seqs_train, x_statics_train, y_train, x_seqs_val, x_static
 os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
 
 
-hpos = {
+hps = {
     "complete": {"size": [8, 16], "learning_rate": [0.0005, 0.001], "batch_size": [128]},
     "sequential": {"size": [8, 16], "learning_rate": [0.0005, 0.001], "batch_size": [128]},
     "static": {"learning_rate": [0.0005, 0.001], "batch_size": [128]},
@@ -1244,14 +1181,14 @@ if data_set == "sepsis":
                 target_activity, max_len, min_len)
 
             # Run eval on cuts to plot results --> Figure 1
-            x_seqs_train, x_statics_train, y_train, x_seqs_val, x_statics_val, y_val, best_hpos_repetitions = evaluate_on_cut(
+            x_seqs_train, x_statics_train, y_train, x_seqs_val, x_statics_val, y_val, best_hps_repetitions = evaluate(
                 x_seqs, x_statics, y, mode, target_activity,
-                data_set, hpos, hpo, x_time=x_time_vals_final, x_statics_vals_corr=None)
+                data_set, hps, hpo, x_time=x_time_vals_final, x_statics_vals_corr=None)
 
             if mode == "complete":
                 # Train model and plot linear coef
                 model = run_coefficient(x_seqs_train, x_statics_train, y_train, x_seqs_val, x_statics_val, y_val,
-                                        target_activity, static_features, best_hpos_repetitions)
+                                        target_activity, static_features, best_hps_repetitions)
 
                 x_seqs_train = x_seqs_train[0:1000]
                 x_statics_train = x_statics_train[0:1000]
