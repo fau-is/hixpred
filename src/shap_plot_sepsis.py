@@ -21,7 +21,7 @@ matplotlib.rcParams.update({'font.size': 16})
 
 def my_palplot(pal, size=1, ax=None):
     """
-    creates a plot for the data stored in "data_set" using the input color palette.
+    Creates a plot for the data stored in "data_set" using the input color palette.
     works for the sepsis dataset.
     plot is saved in plots folder.
     :param pal: color palette

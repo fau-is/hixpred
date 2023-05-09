@@ -30,7 +30,7 @@ hpo = True
 
 def concatenate_tensor_matrix(x_seq, x_stat):
     """
-    concatenates two datasets and returns them as a matrix.
+    Concatenates two datasets and returns them as a matrix.
     :param x_seq: dataset of sequential features
     :param x_stat: dataset of static features
     :return: concatenated dataset containing static and sequential features
@@ -43,13 +43,13 @@ def concatenate_tensor_matrix(x_seq, x_stat):
 
 def train_rf(x_train_seq, x_train_stat, y_train, x_val_seq, x_val_stat, y_val, hps, hpo):
     """
-    trains a ml model with the input data using the random forest classifier and returns the model as well as the hyperparameters, if needed.
+    Trains an ml model with the input data using the random forest classifier and returns the model as well as the hyperparameters, if needed.
     best hps will be saved in an external file.
-    :param x_train_seq: trainingsdataset (sequential Features)
-    :param x_train_stat: trainingsdataset (static Features)
+    :param x_train_seq: trainingsdataset (sequential features)
+    :param x_train_stat: trainingsdataset (static features)
     :param y_train: trainingsdataset (target attribute)
-    :param x_val_seq: validation dataset (sequential Features)
-    :param x_val_stat: validation dataset (static Features)
+    :param x_val_seq: validation dataset (sequential features)
+    :param x_val_stat: validation dataset (static features)
     :param y_val: validation dataset (target attribute)
     :param hps: hyperparameters
     :param hpo: true: model and hps will be determined and returned | false: only model will be returned
@@ -101,13 +101,13 @@ def train_rf(x_train_seq, x_train_stat, y_train, x_val_seq, x_val_stat, y_val, h
 
 def train_lr(x_train_seq, x_train_stat, y_train, x_val_seq, x_val_stat, y_val, hps, hpo):
     """
-    trains a ml model with the input data using the logistic regression classifier and returns the model as well as the hyperparameters,if selected.
+    Trains an ml model with the input data using the logistic regression classifier and returns the model as well as the hyperparameters,if selected.
     best hps will be saved in an external file.
-    :param x_train_seq: trainingsdataset (sequential Features)
-    :param x_train_stat: trainingsdataset (static Features)
+    :param x_train_seq: trainingsdataset (sequential features)
+    :param x_train_stat: trainingsdataset (static features)
     :param y_train: trainingsdataset (target attribute)
-    :param x_val_seq: validation dataset (sequential Features)
-    :param x_val_stat: validation dataset (static Features)
+    :param x_val_seq: validation dataset (sequential features)
+    :param x_val_stat: validation dataset (static features)
     :param y_val: validation dataset (target attribute)
     :param hps: hyperparameters
     :param hpo: true: model and hps will be determined and returned | false: only model will be returned
@@ -156,13 +156,13 @@ def train_lr(x_train_seq, x_train_stat, y_train, x_val_seq, x_val_stat, y_val, h
 
 def train_gb(x_train_seq, x_train_stat, y_train, x_val_seq, x_val_stat, y_val, hps, hpo):
     """
-    trains a ml model with the input data using the gradient boosting classifier and returns the model as well as the hyperparameters,if selected.
+    Trains an ml model with the input data using the gradient boosting classifier and returns the model as well as the hyperparameters,if selected.
     best hps will be saved in an external file.
-    :param x_train_seq: trainingsdataset (sequential Features)
-    :param x_train_stat: trainingsdataset (static Features)
+    :param x_train_seq: trainingsdataset (sequential features)
+    :param x_train_stat: trainingsdataset (static features)
     :param y_train: trainingsdataset (target attribute)
-    :param x_val_seq: validation dataset (sequential Features)
-    :param x_val_stat: validation dataset (static Features)
+    :param x_val_seq: validation dataset (sequential features)
+    :param x_val_stat: validation dataset (static features)
     :param y_val: validation dataset (target attribute)
     :param hps: hyperparameters
     :param hpo: true: model and hps will be determined and returned | false: only model will be returned
@@ -211,13 +211,13 @@ def train_gb(x_train_seq, x_train_stat, y_train, x_val_seq, x_val_stat, y_val, h
 
 def train_ada(x_train_seq, x_train_stat, y_train, x_val_seq, x_val_stat, y_val, hps, hpo):
     """
-    trains a ml model with the input data using the ada boost classification and returns the model as well as the hyperparameters, if needed.
+    Trains an ml model with the input data using the ada boost classification and returns the model as well as the hyperparameters, if needed.
     best hps will be saved in an external file.
-    :param x_train_seq: trainingsdataset (sequential Features)
-    :param x_train_stat: trainingsdataset (static Features)
+    :param x_train_seq: trainingsdataset (sequential features)
+    :param x_train_stat: trainingsdataset (static features)
     :param y_train: trainingsdataset (target attribute)
-    :param x_val_seq: validation dataset (sequential Features)
-    :param x_val_stat: validation dataset (static Features)
+    :param x_val_seq: validation dataset (sequential features)
+    :param x_val_stat: validation dataset (static features)
     :param y_val: validation dataset (target attribute)
     :param hps: hyperparameters
     :param hpo: true: model and hps will be determined and returned | false: only model will be returned
@@ -266,13 +266,13 @@ def train_ada(x_train_seq, x_train_stat, y_train, x_val_seq, x_val_stat, y_val, 
 
 def train_nb(x_train_seq, x_train_stat, y_train, x_val_seq, x_val_stat, y_val, hps, hpo):
     """
-    trains a ml model with the input data using the naive bayes classification and returns the model as well as the hyperparameters, if needed.
+    Trains an ml model with the input data using the naive bayes classification and returns the model as well as the hyperparameters, if needed.
     best hps will be saved in an external file.
-    :param x_train_seq: trainingsdataset (sequential Features)
-    :param x_train_stat: trainingsdataset (static Features)
+    :param x_train_seq: trainingsdataset (sequential features)
+    :param x_train_stat: trainingsdataset (static features)
     :param y_train: trainingsdataset (target attribute)
-    :param x_val_seq: validation dataset (sequential Features)
-    :param x_val_stat: validation dataset (static Features)
+    :param x_val_seq: validation dataset (sequential features)
+    :param x_val_stat: validation dataset (static features)
     :param y_val: validation dataset (target attribute)
     :param hps: hyperparameters
     :param hpo: true: model and hps will be determined and returned | false: only model will be returned
@@ -320,13 +320,13 @@ def train_nb(x_train_seq, x_train_stat, y_train, x_val_seq, x_val_stat, y_val, h
 
 def train_knn(x_train_seq, x_train_stat, y_train, x_val_seq, x_val_stat, y_val, hps, hpo):
     """
-    trains a ml model with the input data using the gaussian k-nearest neighbors classification and returns the model as well as the hyperparameters,if selected.
+    Trains an ml model with the input data using the gaussian k-nearest neighbors classification and returns the model as well as the hyperparameters,if selected.
     best hps will be saved in an external file.
-    :param x_train_seq: trainingsdataset (sequential Features)
-    :param x_train_stat: trainingsdataset (static Features)
+    :param x_train_seq: trainingsdataset (sequential features)
+    :param x_train_stat: trainingsdataset (static features)
     :param y_train: trainingsdataset (target attribute)
-    :param x_val_seq: validation dataset (sequential Features)
-    :param x_val_stat: validation dataset (static Features)
+    :param x_val_seq: validation dataset (sequential features)
+    :param x_val_stat: validation dataset (static features)
     :param y_val: validation dataset (target attribute)
     :param hps: hyperparameters
     :param hpo: true: model and hps will be determined and returned | false: only model will be returned
@@ -376,13 +376,13 @@ def train_knn(x_train_seq, x_train_stat, y_train, x_val_seq, x_val_stat, y_val, 
 def train_lstm(x_train_seq, x_train_stat, y_train, x_val_seq=False, x_val_stat=False, y_val=False, hps=False,
                hpo=False, mode="complete"):
     """
-    trains a long short-term memory model with the input data and returns the model as well as the hyperparameters,if selected.
+    Trains an long short-term memory model with the input data and returns the model as well as the hyperparameters,if selected.
     best hps will be saved in an external file.
-    :param x_train_seq: trainingsdataset (sequential Features)
-    :param x_train_stat: trainingsdataset (static Features)
+    :param x_train_seq: trainingsdataset (sequential features)
+    :param x_train_stat: trainingsdataset (static features)
     :param y_train: trainingsdataset (target attribute)
-    :param x_val_seq: validation dataset (sequential Features)
-    :param x_val_stat: validation dataset (static Features)
+    :param x_val_seq: validation dataset (sequential features)
+    :param x_val_stat: validation dataset (static features)
     :param y_val: validation dataset (target attribute)
     :param hps: hyperparameters
     :param hpo: true: model and hps will be determined and returned | false: only model will be returned
@@ -754,12 +754,12 @@ def train_lstm(x_train_seq, x_train_stat, y_train, x_val_seq=False, x_val_stat=F
 
 def correct_static(seq, seqs_time, idx_sample, idx_time):
     """
-    corrects the static features of a sequence based on seqs_time.
+    Corrects the static features of a sequence based on seqs_time.
     :param seq: sequence with static features that should be corrected
     :param seqs_time: matrix, that stores features and their values
     :param idx_sample: index determining which sample from seqs_time will be used
     :param idx_time: index determining from which time the entries from seqs_time will be selected
-    :return: Corrected seq
+    :return: corrected seq
     """
 
     features = seqs_time[0][0].index._values
@@ -779,7 +779,7 @@ def correct_static(seq, seqs_time, idx_sample, idx_time):
 
 def time_step_blow_up(X_seq, X_stat, y, max_len, ts_info=False, x_time=None, x_time_vals=None, x_statics_vals_corr=None):
     """
-    blows up the time steps by generating longer prefixes.
+    Blows up the time steps by generating longer prefixes.
     :param X_seq: sequential feature dataset
     :param X_stat: static feature dataset
     :param y: target attribute
@@ -836,7 +836,7 @@ def time_step_blow_up(X_seq, X_stat, y, max_len, ts_info=False, x_time=None, x_t
 
 def evaluate(x_seqs, x_statics, y, mode, target_activity, data_set, hps, hpo, x_time=None, x_statics_vals_corr=None):
     """
-    evaluates the predictive performance of the ml model.
+    Evaluates the predictive performance of the ml model.
     :param x_seqs: sequential features datasets
     :param x_statics: static features datasets
     :param y: target attribute
@@ -847,12 +847,12 @@ def evaluate(x_seqs, x_statics, y, mode, target_activity, data_set, hps, hpo, x_
     :param hpo: true: model and hps will be determined and returned by the called training functions | false: only model will be returned by the called training functions
     :param x_time: list of timestamps; none by default
     :param x_statics_vals_corr: corrected values of static features; none by default
-    :return: Multiple objects:
+    :return: multiple objects:
         X_train_seq = sequential data for training
         X_train_stat = static Data for training
         y_train = target attribute for training
         X_val_seq = sequential data for validation
-        X_val_stat = static Data for validation
+        X_val_stat = static data for validation
         y_val = target attribute for validation
         best_hps_repetitions = best hps. value = "", if hpo = false
     """
@@ -1127,16 +1127,16 @@ def evaluate(x_seqs, x_statics, y, mode, target_activity, data_set, hps, hpo, x_
 def run_coefficient(x_seqs_train, x_statics_train, y_train, x_seqs_val, x_statics_val, y_val, target_activity,
                     static_features, best_hps_repetitions):
     """
-    trains a ml model with lstm, writes the weights for the static attributes into a file and returns a ml model.
+    Trains an ml model with lstm, writes the weights for the static attributes into a file and returns a ml model.
     :param x_seqs_train: sequential trainings dataset
     :param x_statics_train: static trainings dataset
-    :param y_train: Target attribute trainings dataset
+    :param y_train: target attribute trainings dataset
     :param x_seqs_val: sequential validation dataset
     :param x_statics_val: static validation dataset
-    :param y_val: Target attribute validation dataset
+    :param y_val: target attribute validation dataset
     :param target_activity: target activity of the dataset
     :param static_features: list of the names of the static features
-    :param best_hps_repetitions: A dictionary with informations about the best hyperparameters for the model
+    :param best_hps_repetitions: a dictionary with informations about the best hyperparameters for the model
     :return: lstm trained ml model
     """
     model = train_lstm(x_seqs_train, x_statics_train, y_train, x_seqs_val, x_statics_val, y_val, best_hps_repetitions,

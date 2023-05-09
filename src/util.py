@@ -2,7 +2,7 @@ import numpy as np
 
 def get_one_hot_of_activity_sepsis(x, max_leucocytes, max_lacticacid):
     """
-    creates a one-hot vector based on the ['Activity']-value of x.
+    Creates a one-hot vector based on the ['Activity']-value of x.
     :param x: dataset
     :param max_leucocytes: numerical value representing the maximal value of leucocytes
     :param max_lacticacid: numerical value representing the maximal value of lacticacid
